@@ -19,7 +19,7 @@ def parse(file)
   whole_file_unless_header, header_if_header, body_if_header = contents.split(/^---\s*\n(.+)\s*\n---\n/m) # Pull out the YAML header
   # https://github.com/mojombo/jekyll/blob/master/lib/jekyll/convertible.rb line 26 for YAML header parsing inspiration.
   # Build a response in the format: [file path, options from YAML header, raw data after the header]
-  if raw_header && raw_body # If the header is found.
+  if header_if_header && body_if_header # If the header is found.
     resp = Page.new file, YAML::load(header_if_header).symbolize, body_if_header
   else
     resp = Page.new file, {}, whole_file_unless_header
