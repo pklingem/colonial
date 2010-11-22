@@ -1,3 +1,7 @@
+# Stevenson Branch Primer
+
+This is the experimental stevenson branch, which uses the stevenson project (https://github.com/dirk/stevenson) to render and serve pages instead of the previous, less-elegant system.
+
 # Charleston Ruby Collaborative Web Site
 
 ## What is it?
