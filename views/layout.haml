@@ -15,6 +15,6 @@
           %a{:title => 'Home', :href => '/'} Home
         - @pages.each do |page|
           %li
-            %a{:title => page[1][:title], :href => "/#{page[1][:path]}"}= page[1][:title]
+            %a{:title => page.header[:title], :href => "/#{page[1][:path]}"}= page.header[:title]
 
       = yield
