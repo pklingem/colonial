@@ -9,33 +9,37 @@ class Hash
   end
 end
 
+class Page < Struct.new :filename, :header, :body; end
+
 def parse(file)
   # Parses a file; grabs YAML out of the header as well as the rest of the document.
   # Tries to guess format and pre-renders if it can figure it out.
   
   contents = File.read(file) {|f| f.read }
-  parts    = contents.split(/^---\s*\n(.+)\s*\n---\n/m) # Pull out the YAML header
+  whole_file_unless_header, header_if_header, body_if_header = contents.split(/^---\s*\n(.+)\s*\n---\n/m) # Pull out the YAML header
   # https://github.com/mojombo/jekyll/blob/master/lib/jekyll/convertible.rb line 26 for YAML header parsing inspiration.
   # Build a response in the format: [file path, options from YAML header, raw data after the header]
-  if parts.length > 2 # If the header is found.
-    resp = [file, YAML::load(parts[1]).symbolize, parts[2]]
+  if raw_header && raw_body # If the header is found.
+    resp = Page.new file, YAML::load(header_if_header).symbolize, body_if_header
   else
-    resp = [file, {}, parts[0]]
+    resp = Page.new file, {}, whole_file_unless_header
   end
+
+  raise "Page header must be a hash" unless resp.header.is_a? Hash
   
   # Build a scope of options from the header
   scope = Object.new
-  resp[1].each do |k, v|
+  resp.header.each do |k, v|
     scope.instance_variable_set("@#{k}".to_sym, v)
   end
   # Guess the format.
-  if resp[0] =~ /haml$/
-    resp[2] = Haml::Engine.new(resp[2]).render scope # Render the raw data with the scope
+  if resp.filename =~ /haml$/
+    resp.body = Haml::Engine.new(resp.body).render scope # Render the raw data with the scope
   else
-    resp[2] = ERB.new(resp[2]).result(scope.instance_eval { binding })
+    resp.body = ERB.new(resp.body).result(scope.instance_eval { binding })
   end
   
-  resp[1][:path] = File.basename(resp[0]).split('.').first unless resp[1].has_key? :path
+  resp.header[:path] = File.basename(resp.filename).split('.').first unless resp.header.has_key? :path
   
   resp
 end
