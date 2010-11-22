@@ -1,3 +1,6 @@
+# Require all helpers
+Dir[File.dirname(__FILE__) + "/helpers/*.rb"].each {|file| require file }
+
 class Hash
   def symbolize
     accum = {}
