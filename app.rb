@@ -5,12 +5,18 @@ require 'yaml'
 require 'haml'
 
 # Webserving, yay!
-require 'sinatra'
+require 'stevenson'
 
 # Making life easier
 require 'ext'
 
+pen :run => true do
+  collection :people do
+    page :tom
+  end
+end
 
+=begin
 
 # Pre-compiling (in a sense) all of the people, pages, and projects ahead of time.
 # Reducing the hit on the filesystem.
@@ -72,3 +78,4 @@ get Regexp.new("^/#{pages_match}$", true) do |t|
   haml :page
 end
 
+=end

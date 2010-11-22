@@ -1,7 +1,7 @@
 !!! 5
 %html
   %head
-    %title= 'Charleston Ruby User Group' + (@title ? ' > ' + @title : '')
+    %title= 'Charleston Ruby User Group' + (attr(:title).to_s ? ' > ' + attr(:title).to_s : '')
     %link{ :href => '/stylesheets/reset.css', :rel => 'stylesheet' }
     %link{ :href => '/stylesheets/text.css', :rel => 'stylesheet' }
     %link{ :href => '/stylesheets/960.css', :rel => 'stylesheet' }
@@ -10,11 +10,4 @@
     .container_12
       %a{:title => 'Charleston Ruby User Group', :href => '/'} 
         %img{:src => '/images/charleston-ruby.gif', :alt => 'Charleston Ruby User Group'}
-      %ul
-        %li
-          %a{:title => 'Home', :href => '/'} Home
-        - @pages.each do |page|
-          %li
-            %a{:title => page.header[:title], :href => "/#{page[1][:path]}"}= page.header[:title]
-
-      {default}
+    {yield}
